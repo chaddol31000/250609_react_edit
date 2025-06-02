@@ -1,0 +1,71 @@
+1. npm 설치
+  - axios
+  - react-bootstrap
+  - react-router-dom : 리액트 라우터 v6
+  - zustand
+    상태를 컴포넌트 외부로 분리 (props drilling 을 막자)
+    처음 등장한 것은 리액트의 Context API → Redux 라이브러리가 널리 사용 (복잡) → zustand
+  - dompurify
+    서버에 저장된 html 을 출력할 때 위험한 코드를 제거 (sanitize) 하는 라이브러리가
+    예를 들어, <script>alert('hello')</script> 라는 내용을 가진 글을 작성한 경우
+      그 글을 읽기 화면에서 그대로 출력하면 자바스크립트가 실행되어 버린다
+
+2. Same Origin (동일 출처)
+  - a 사이트에서 b사이트와 통신 하려고 하면 위험하다고 간주해 통신이 거부됨
+  - 동일 출처 정책 (Same Origin Policy) : 동일 출처가 아니면 통신이 거부된다
+  - MVC 방식은 항상 동일 출처다 → 프론트와 백이 사실 같은 사이트 소속임
+  - react 방식은
+    ㄴ 프론트 : localhost:3000
+    ㄴ 백 : localhost:8080
+    동일 출처가 되려면 사이트 주소와 포트까지 똑같아야 한다
+      www.naver.com 에서 ad.naver.com 에 rest 통신을 보낸다? → 동일 출처가 아니다 → 차단당하게 됨
+
+3. Cross Origin Resource Sharing(CORS)
+  - 다른 사이트(Cross Origin) 에 있는 무언가(Resource) 를 사용하려면...
+    서버에서 모든 CORS 요청을 허용하겠다... 라고 설정을 잡아야 한다
+      그 설정이 스프링에서는 @CrossOrigin("*") 
+      CrossOrigin 을 사용하면 보안을 포기하고 모든 걸 서비스하겠다는 말이 됨
+  - render 를 이용해서 Todo 를 만들 때 
+      axios 에  withCredential 추가 설정 없이 render 를 잘 사용을 했다
+    서버에서 모든 CORS 요청을 허용하겠다... 라고 설정하면 프론트는 추가 작업 필요 X
+
+4. 로그인을 해야한다면?
+
+
+5. 사용자 정보를 처리하기
+  - cookie : 사용자 정보를 사용자 컴퓨터에 저장 (보안이 매우 취약 → 암호화 등 작업 필요)
+  - session : 사용자 정보를 서버의 메모리에 저장 (일정 시간이 지나면 날아간다 → 대표적으로 로그인)
+  - database : 사용자 정보를 영구 저장 (주문 목록)
+
+6. HTTP는 상태가 없다
+  - 그러면 session 은 어떻게 구현하지?
+    ㄴ session은 sessionid 라는 쿠키로 구현된다
+      예를 들어, 네이버에서 수신된 쿠키는 사용자가 네이버에 접근할 때마다 헤더에 담겨서 자동 전송된다
+  - 서버가 봤을 때 sessionid 라는 쿠키가 없다면 서버가 sessionid 쿠키를 발급한다
+    그리고 서버는 사용자를 구별하는 것이 아니라, 헤더에 담긴 sessionid 값을 가지고
+    "이번 요청에 1234 라는 세션 아이디가 있네. 아까도 있었는데... 같은 사람이구나..." 이렇게 판다
+
+7. CORS 와 쿠키 자동 전송이 충돌한다
+  - 우리 프론트가 우리 백에 로그인 처리 되려면
+    우리 프론트가 수신한 쿠키가 우리 백으로 자동 전송이 되어야 한다
+  - 그러나 쿠키는 CORS 간 자동 전송이 되지 않는다 → "ajax 요청에 쿠키를 포함해라" 라고 설정해야 한다
+    ㄴ withCredential : true 
+
+8. 그런데 프론트에서 withCredential:true 를 지정하면 백에서 CrossOrigin("*") 를 사용할 수 없다
+  - CrossOrigin("*") 는 서버에서 "보안 포기해. 그냥 주소 신경쓰지마" 라는 설정이다
+
+9. 이제 스프링에서 정식으로 CORS 관련 설정을 해줘야 한다
+  - CORS 에 대한 필터를 작성 vs  스프링 시큐리티에 설정(권장)
+
+10. css 관리
+  - 전역 css는 index.css 나 App.css 를 사용한다
+  - 특정 컴포넌트에서만 사용할 css 는 컴포넌트.css 를 사용하자
+    ex. PostList 에서 사용할 css 는 PostList.css
+    - 각자 자신이 작업하는 컴포넌트의 css 를 알아서 책임지자
+      보통 권장되는 선택자는 class 선택자, 그런데 각자 알아서 css를 만들다 보면 class가 겹치면 어떡하지?
+    - 리액트의 해결책 : 컴포넌트.module.css 파일을 만들고 import 할 때 Styles from '컴포넌트.module'
+      ㄴ css를 자바스크립트 코드화 해서 <div className={styles.red}> 와 같이 사용한다
+        이 때, 리액트가 스타일 이름을 랜덤하게 바꿔준다 (스타일 이름을 복잡하게 바꿔서 겹치지 않게)
+
+
+
