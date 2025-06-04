@@ -5,6 +5,8 @@ import Posts from '../../components/posts/Posts.jsx';
 import Paginations from '../../components/posts/Paginations.jsx';
 import { useSearchParams } from 'react-router-dom';
 import LoadingSpinner from '../../components/commons/LoadingSpinner.jsx';
+import { AsyncStatus } from '../../utils/constant.js';
+import { Alert } from 'react-bootstrap';
 
 // 부모가 상태를 가진다 → 자식은 props 로 전달받아서 출력한다
 // 상태를 외부에 저장 → 필요한 컴포넌트가 알아서 데이터를 가지고 오자
@@ -12,8 +14,9 @@ import LoadingSpinner from '../../components/commons/LoadingSpinner.jsx';
 
 function PostList() {
   const [params] = useSearchParams();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  // 읽기 상태를 저장 : IDLE → loading → success 또는 fail
+  const [loadingStatus, setLoadingStatus] = useState(AsyncStatus.IDLE);
+
   
   // store 에 저장된 posts 상태와 그 상태를 변경할 setter 함수를 가져온다
   const posts = usePostStore(state=>state.posts);
@@ -25,7 +28,7 @@ function PostList() {
     pageno=1;
 
   useEffect(()=> {
-    setLoading(true);
+    setLoadingStatus(AsyncStatus.LOADING);
     // 서버에서 posts 를 읽어와서 store 에 저장
     async function fetch() {
       try {
@@ -34,14 +37,15 @@ function PostList() {
         // 전개 연산자를 이용해서 posts 와 나머지를 분리
           // posts 라는 애를 꺼내 나머지를 전개 연산자로 꺼내서 분리! 
           // rest 에는 posts 를 제외한 나머지가 들어있음
+        // 전에 만들었던 try 문은 작업이 성공했다는 걸 띄울 수가 없어서 애매했음
+          // 그래서 상수로 묶어둔 작업 결과를 가져와서 띄움
         const {posts, ...rest} = response.data;
         setPosts(posts);
         setPagination(rest);
+        setLoadingStatus(AsyncStatus.SUCCESS);
       } catch(err) {
-        setError(err.message);
+        setLoadingStatus(AsyncStatus.FAIL);
         console.log(err);
-      }finally {
-        setLoading(false);
       }
     }
     fetch();
@@ -59,8 +63,13 @@ function PostList() {
   // 여기서는 posts 에 값이 들어있어야함
   // console.log(posts);
 
-  if(error!=='') return <div>{error}</div>
-  if(loading || posts===null) return <LoadingSpinner />;
+  // 작업 대기 상태거나 로딩 중일 때는 로딩스피너 띄우기
+  if(loadingStatus===AsyncStatus.IDLE || loadingStatus===AsyncStatus.LOADING)
+    return <LoadingSpinner />
+  
+  // 작업 실패했으면 리액트 부트스트랩 사용해서 서버가 응답하지 않는다는 메시지 띄우기
+  if(loadingStatus===AsyncStatus.FAIL)
+    return <Alert variant='danger'>서버가 응답하지 않습니다</Alert>
   return (
     <div>
       <Posts />

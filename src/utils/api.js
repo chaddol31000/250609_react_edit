@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-
-const api = axios.create({baseURL:'http://localhost:8080', withCredential: true});
+// withCredentials 에 s 를 안 붙이면 세션 아이디가 새로고침하면 계속 새로 생성됨
+const api = axios.create({baseURL:'http://localhost:8080', withCredentials: true});
 
 export default api;
