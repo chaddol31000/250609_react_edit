@@ -13,6 +13,8 @@ function MemberLogin() {
   const vUsername = useUsername();
   const vPassword = usePassword();
   const [submittingStatus, setSubmittingStatus] = useState(AsyncStatus.IDLE);
+  // 로그인 실패 상태 코드 (401 or 403) 를 저장
+  const [status, setStatus] = useState(0);
   const navigate = useNavigate();
   const setUsername = useAuthStore(state=>state.setUsername);
 
@@ -37,13 +39,15 @@ function MemberLogin() {
       return;
     } catch(err) {
       setSubmittingStatus(AsyncStatus.FAIL);
+      setStatus(err.status);
       console.log(err);
     }
   }
 
   return (
     <div>
-      {submittingStatus===AsyncStatus.FAIL && <Alert variant="danger">아이디나 비밀번호를 확인하세요</Alert>}
+      {(submittingStatus===AsyncStatus.FAIL && status===401) && <Alert variant="danger">아이디나 비밀번호를 확인하세요</Alert>}
+      {(submittingStatus===AsyncStatus.FAIL && status===403) && <Alert variant="danger">확인되지 않은 계정. 이메일을 확인하세요</Alert>}
       <TextField label='아이디' name='username' {...vUsername} />
       <TextField label='비밀번호' name='password' type='password' {...vPassword} />
       <BlockButton 

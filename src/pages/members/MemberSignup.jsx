@@ -7,9 +7,7 @@ import useEmail from '../../hooks/useEmail';
 import BlockButton from '../../components/commons/BlockButton';
 import useProfile from '../../hooks/useProfile';
 import ProfileField from '../../components/members/ProfileField';
-import api from '../../utils/api';
 import { AsyncStatus } from '../../utils/constant';
-import { useNavigate } from 'react-router-dom';
 import { Alert } from 'react-bootstrap';
 import { signup } from '../../utils/memberAPI';
 
@@ -21,7 +19,6 @@ import { signup } from '../../utils/memberAPI';
 
 function MemberSignup() {
   const [submittingStatus, setSubmittingStatus] = useState(AsyncStatus.IDLE);
-  const navigate = useNavigate();
 
   const vProfile = useProfile();
   const vPassword = usePassword();
@@ -51,8 +48,6 @@ function MemberSignup() {
     try {
       const response = await signup(formData);
       setSubmittingStatus(AsyncStatus.SUCCESS);
-      // navigate 가 되도 현재 컴포넌트는 보이지는 않지만 렌더링은 계속된다
-      navigate("/member/login");
     } catch(err) {
       setSubmittingStatus(AsyncStatus.FAIL);
       console.log(err);
@@ -62,6 +57,11 @@ function MemberSignup() {
     // 구조분해 할당은 이름, 값, 이름, 값 이렇게 다 나눠주는 것임
     // 똑같이 반복되는 이름 onChange={vUsername.onChange} onBlur={vUsername.onBlur} message={vUsername.message} 을
       // 깔끔하게 만들기 위해 축약 표현인 구조분해할당을 통해 {...vUsername} 으로 작성
+  if(submittingStatus===AsyncStatus.SUCCESS) {
+    return (
+      <Alert variant='success'>가입 확인 메일을 보냈습니다. 이메일을 확인하세요</Alert>
+    )
+  }
   return (
     <div>
       {submittingStatus===AsyncStatus.FAIL && <Alert variant='danger'>회원가입에 실패했습니다</Alert>}

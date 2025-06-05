@@ -34,6 +34,7 @@ function Nav() {
           <li><Link to="/member/signup">회원 가입</Link></li>
           <li><Link to="/member/login">로그인</Link></li>
           <li><Link to="/member/find-username">아이디 찾기</Link></li>
+          <li><Link to="/member/find-password">비밀번호 찾기</Link></li>
         </ul>
       </nav>
     )

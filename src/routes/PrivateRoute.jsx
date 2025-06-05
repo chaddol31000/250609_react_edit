@@ -11,7 +11,7 @@ function PrivateRoute({element}) {
   // store 에 저장된 상태가 갱신되면 그 상태를 구독중인 컴포넌트들도 자동으로 갱신된다
   if(username===undefined)
     return;
-  return username? <Navigate to="/member/login" />:element;
+  return username? element:<Navigate to="/member/login" />;
 }
 
 export default PrivateRoute

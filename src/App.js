@@ -12,7 +12,12 @@ import MemberLogin from './pages/members/MemberLogin';
 import useAuthStore from './stores/useAuthStore';
 import { useEffect } from 'react';
 import PublicRoute from './routes/PublicRoute';
+import PrivateRoute from './routes/PrivateRoute';
 import MemberFindUsername from './components/members/MemberFindUsername';
+import MemberVerified from './pages/members/MemberVerified';
+import MemberFindPassword from './pages/members/MemberFindPassword';
+import MemberRead from './pages/members/MemberRead';
+import MemberCheckPassword from './pages/members/MemberCheckPassword';
 
 function App() {
   const checkAuth = useAuthStore(state=>state.checkAuth);
@@ -31,8 +36,12 @@ function App() {
             <Routes>
               <Route path="/" element={<PostList />} />
               <Route path="/member/signup" element ={<PublicRoute element={<MemberSignup />} />} />
+              <Route path="/member/verified" element ={<PublicRoute element={<MemberVerified />} />} />
               <Route path="/member/login" element ={<PublicRoute element={<MemberLogin />}/>} />
               <Route path="/member/find-username" element={<PublicRoute element={<MemberFindUsername />}/>}/>
+              <Route path="/member/find-password" element={<PublicRoute element={<MemberFindPassword />}/>}/>
+              <Route path="/member/check-password" element={<PrivateRoute element={<MemberCheckPassword />}/>}/>
+              <Route path="/member/read" element={<PrivateRoute element={<MemberRead />}/>}/>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </section>
