@@ -22,8 +22,9 @@ function usePassword() {
     setMessage('비밀번호는 영숫자 6~10자 입니다');
     return false;
   }
+  const reset=()=> setValue('');
   
-  return {value, message, onChange, onBlur};
+  return {value, message, onChange, onBlur, reset};
 }
 
 export default usePassword

@@ -18,8 +18,10 @@ function useConfirmPassword(vPassword) {
       return false;
     }
   }
+
+  const reset=()=>setValue('');
   
-  return {value, message, onChange, onBlur};
+  return {value, message, onChange, onBlur,reset};
 }
 
 export default useConfirmPassword

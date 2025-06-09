@@ -18,6 +18,7 @@ import MemberVerified from './pages/members/MemberVerified';
 import MemberFindPassword from './pages/members/MemberFindPassword';
 import MemberRead from './pages/members/MemberRead';
 import MemberCheckPassword from './pages/members/MemberCheckPassword';
+import MemberChangePassword from './pages/members/MemberChangePassword';
 
 function App() {
   const checkAuth = useAuthStore(state=>state.checkAuth);
@@ -42,6 +43,7 @@ function App() {
               <Route path="/member/find-password" element={<PublicRoute element={<MemberFindPassword />}/>}/>
               <Route path="/member/check-password" element={<PrivateRoute element={<MemberCheckPassword />}/>}/>
               <Route path="/member/read" element={<PrivateRoute element={<MemberRead />}/>}/>
+              <Route path="/member/change-password" element={<PrivateRoute element={<MemberChangePassword />}/>}/>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </section>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import useMemberStore from '../../stores/useMemberStore'
 import { AsyncStatus } from '../../utils/constant';
 import usePassword from '../../hooks/usePassword';
 import { Alert } from 'react-bootstrap';
 import TextField from '../../components/commons/TextField';
 import BlockButton from '../../components/commons/BlockButton';
 import { checkPassword } from '../../utils/memberAPI';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import usePasswordStore from '../../stores/usePasswordStroe';
 // 내 정보를 보려면 비밀번호 확인을 거쳐야 한다
 // 비밀번호를 확인한 경우에만 내 정보를 볼 수 있다
 // 비밀번호 확인 여부 : 
@@ -14,8 +14,8 @@ import { useNavigate } from 'react-router-dom';
   // - MemberRead 에서 확인. 확인 되지 않은 경우 MemberCheckPassword 로 이동
 
 function MemberCheckPassword() {
-  const isPasswordVerified = useMemberStore(state=>state.isPasswordVerified);
-  const setPasswordVerified = useMemberStore(state=>state.setPasswordVerified);
+  const isPasswordVerified = usePasswordStore(state=>state.isPasswordVerified);
+  const setPasswordVerified = usePasswordStore(state=>state.setPasswordVerified);
   const [submittingStatus, setSubmittingStatus] = useState(AsyncStatus.IDLE);
   const vPassword = usePassword();
   const navigate = useNavigate();
@@ -41,6 +41,9 @@ function MemberCheckPassword() {
     }
   }
 
+  // jsx 조건부 렌더링
+  if(isPasswordVerified) return <Navigate to="/member/read" />
+  
   return (
     <div>
       {submittingStatus===AsyncStatus.FAIL && <Alert variant='danger'>비밀번호를 확인하지 못했습니다</Alert>}
