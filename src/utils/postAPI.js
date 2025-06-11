@@ -13,3 +13,9 @@ export const read =(pno)=>api.get(`/posts/post?pno=${pno}`).then(res=>res.data);
   // get, delete 는 위처럼 넘기면 안됨
     // api.delete(`주소?username=spring&password=1234`)와 같은 주소에 파라미터를 담아서 (quertstring) 전달한다
 export const erase=(pno)=>api.delete(`/posts/post?pno=${pno}`);
+
+export const writeComment =(object)=>api.post('/api/comments/new', new URLSearchParams(object));
+
+// get, delete 는 파라미터를 querystring 으로 넘겨야 한다
+// export const deleteComment =(object)=>api.delete('/api/comments', new URLSearchParams(object));
+export const deleteComment =(cno,pno)=>api.delete(`/api/comments?cno=${cno}&pno=${pno}`);

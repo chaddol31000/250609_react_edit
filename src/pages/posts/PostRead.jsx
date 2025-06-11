@@ -1,11 +1,13 @@
 import React from 'react'
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import LoadingSpinner from '../../components/commons/LoadingSpinner';
-import { Alert } from 'react-bootstrap';
+import { Alert, Button } from 'react-bootstrap';
 import useAuthStore from '../../stores/useAuthStore';
 import useSWR from 'swr';
 import { erase, read } from '../../utils/postAPI';
 import DOMPurify from 'dompurify';
+import CommentWrite from '../../components/comments/CommentWrite';
+import CommentList from '../../components/comments/CommentList';
 
 function PostRead() {
   // 1. 필요한 기능 가져오기
@@ -84,7 +86,19 @@ function PostRead() {
       */}
       <div style={{minHeight:600, backgroundColor:'#f1f1f1', padding:5}} 
           dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(data.content)}}>
-
+      </div>
+      <div>
+        {
+          isWriter &&
+          <div>
+            <Button variant='success'>변경으로</Button>
+            <Button variant='danger' onClick={doDeletePost}>삭제하기</Button>
+          </div>
+        }
+      </div>
+      <div className='mb-3 mt-3'>
+        {isLogin && <CommentWrite pno={pno} />}
+        <CommentList comments={data.comments} />
       </div>
     </div>
   )
