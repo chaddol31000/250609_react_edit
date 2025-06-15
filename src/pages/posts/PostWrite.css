@@ -1,0 +1,11 @@
+.ql-container {
+    height: 600px;
+    overflow-y: auto;
+    /* 내용 넘치면 y축에 스크롤바 출력하는거 */
+    /* overflow hidden => 내용 넘치면 숨김 / overflow auto: 스크롤바 */
+}
+
+.ql-editor {
+    height: 100%;
+    overflow-y: auto;
+}
